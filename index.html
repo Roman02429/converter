@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Калькулятор</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 360px;
+            margin: 20px auto;
+            padding: 14px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (min-width: 500px) {
+            .container {
+                max-width: 420px;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            margin: 8px 0 12px;
+        }
+
+        .inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            transform: scale(1.03);
+        }
+
+        .results {
+            display: grid;
+            gap: 6px;
+        }
+
+        .results div {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f3f5;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .results div.updated {
+            background: #d4edda;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 11px;
+            margin-top: 12px;
+            color: #777;
+        }
+
+        footer hr {
+            margin: 8px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .clear-btn {
+            padding: 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #ff5c5c;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .clear-btn:hover {
+            background: #ff3b3b;
+        }
+
+        .clear-btn:active {
+            transform: scale(0.95);
+        }
+
+        .theme-btn {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 6px;
+            border: none;
+            border-radius: 8px;
+            background: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        .ee-btn {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 6px;
+            border: none;
+            border-radius: 8px;
+            background: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        html.dark {
+            background: #121212;
+            color: white;
+        }
+
+        html.dark body {
+            background: #121212;
+        }
+
+        html.dark .container {
+            background: #1e1e1e;
+        }
+
+        html.dark input {
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        html.dark .results div {
+            background: #2a2a2a;
+        }
+
+        html.dark footer {
+            color: #aaa;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .label-text {
+            color: green;
+            font-size: 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <button class="ee-btn">Калькулятор э/э для МВПС </button>
+        <button class="theme-btn">🌙 Тема</button>
+
+        <h1>⚡ Конвертер дизельного топлива</h1>
+
+        <div class="inputs">
+            <span class="coefficient-text label-text hidden">Коэффициент теплового расширения:</span>
+            <input class="coefficient" type="number" placeholder="коэффициент теплового расширения">
+        </div>
+
+        <div class="inputs">
+            <span class="liters-text label-text hidden">Литры:</span>
+            <input class="liters" type="number" placeholder="литры">
+        </div>
+
+        <div class="inputs">
+            <span class="kilograms-text label-text hidden">Килограммы:</span>
+            <input class="kilograms" type="number" placeholder="килограммы">
+        </div>
+
+
+        <button class="clear-btn">Очистить</button>
+
+        <footer>
+            <hr>
+            2026 © Roman Zavidov
+        </footer>
+    </div>
+
+    <script>
+
+
+        let coefficient = document.querySelector('.coefficient');
+        let liters = document.querySelector('.liters');
+        let kilograms = document.querySelector('.kilograms');
+
+        let coefficientText = document.querySelector('.coefficient-text');
+        let litersText = document.querySelector('.liters-text');
+        let kilogramsText = document.querySelector('.kilograms-text');
+
+        // скрываем надпись сверху----------------------------------------------------------------
+
+        const hidden = (value, text) => {
+            if (value.length > 0) {
+                text.classList.remove('hidden'); // Показываем текст
+            } else {
+                text.classList.add('hidden');    // Скрываем, если поле пустое
+            };
+        };
+
+
+        // инпуты ----------------------------------------------------------------------------------
+
+
+
+        coefficient.addEventListener('input', () => {
+            hidden(coefficient.value, coefficientText);
+        });
+
+        liters.addEventListener('input', () => {
+            hidden(liters.value, litersText);
+
+            if (+liters.value > 0 && +coefficient.value > 0) {
+                kilograms.value = Math.round(+liters.value * +coefficient.value);
+                hidden(kilograms.value, kilogramsText);
+            }
+        });
+
+        kilograms.addEventListener('input', () => {
+            hidden(kilograms.value, kilogramsText);
+
+            if (+coefficient.value > 0 && +kilograms.value > 0) {
+                liters.value = Math.round(+kilograms.value / +coefficient.value);
+                hidden(liters.value, litersText);
+            }
+        });
+
+
+        // очистка инпутов------------------------------------------------------------------------
+
+        document.querySelector('.clear-btn').addEventListener('click', () => {
+            liters.value = '';
+            hidden(liters.value, litersText);
+            coefficient.value = '';
+            hidden(coefficient.value, coefficientText);
+            kilograms.value = '';
+            hidden(kilograms.value, kilogramsText);
+        });
+
+        // темная/светлая тема------------------------------------------------------------------------
+        const themeBtn = document.querySelector('.theme-btn');
+
+        themeBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // переход на э\э------------------------------------------------------------------------
+        const eeBtn = document.querySelector('.ee-btn');
+
+        eeBtn.addEventListener('click', () => {
+            window.open('https://roman02429.github.io/calculator/', '_blank');
+        });
+    </script>
+
+</body>
+
+</html>
