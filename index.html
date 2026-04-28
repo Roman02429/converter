@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Конвертер д/т</title>
+    <title>Калькулятор</title>
 
     <style>
         body {
@@ -235,6 +235,10 @@
 
         coefficient.addEventListener('input', () => {
             hidden(coefficient.value, coefficientText);
+            if (+coefficient.value < 0) {
+                coefficient.value = '';
+                hidden(coefficient.value, coefficientText);
+            }
         });
 
         liters.addEventListener('input', () => {
@@ -244,14 +248,22 @@
                 kilograms.value = Math.round(+liters.value * +coefficient.value);
                 hidden(kilograms.value, kilogramsText);
             }
+            else if (+liters.value < 0) {
+                liters.value = '';
+                hidden(liters.value, litersText);
+            }
         });
 
         kilograms.addEventListener('input', () => {
             hidden(kilograms.value, kilogramsText);
 
-            if (+coefficient.value > 0 && +kilograms.value > 0) {
+            if ( +kilograms.value > 0 && +coefficient.value > 0) {
                 liters.value = Math.round(+kilograms.value / +coefficient.value);
                 hidden(liters.value, litersText);
+            }
+            else if (+kilograms.value < 0) {
+                kilograms.value = '';
+                hidden(kilograms.value, kilogramsText);
             }
         });
 
